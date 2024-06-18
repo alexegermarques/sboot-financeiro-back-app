@@ -1,4 +1,6 @@
 package com.alexandre.sboot_financeiro_back_app.domain.services;
 
-public interface UsuarioSistemaFinanceiroService {
+import com.alexandre.sboot_financeiro_back_app.domain.entities.UsuarioSistemaFinanceiro;
+
+public interface UsuarioSistemaFinanceiroService extends GenericCrud<UsuarioSistemaFinanceiro>{
 }

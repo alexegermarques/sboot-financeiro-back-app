@@ -34,8 +34,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     public void deletar(Long id) {
         this.categoriaRepository.findById(id)
-                                .orElseThrow(() -> new ObjectNotFoundException("Categoria não encontrada!"));
-        this.categoriaRepository.deleteById(id);
+                .ifPresent(categoria -> this.categoriaRepository.deleteById(categoria.getId()));
     }
 
     @Override
@@ -47,5 +46,10 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Override
     public List<Categoria> listarTodos() {
         return this.categoriaRepository.findAll();
+    }
+
+    @Override
+    public Categoria getCategoriaBySistemaFinanceiro(String emailUsuario) {
+        return this.categoriaRepository.findCategoriaBySistemaFinanceiro(emailUsuario);
     }
 }
