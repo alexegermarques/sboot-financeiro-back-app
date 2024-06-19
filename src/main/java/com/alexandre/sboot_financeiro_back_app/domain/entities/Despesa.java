@@ -37,7 +37,7 @@ public class Despesa {
 
     @Enumerated(EnumType.ORDINAL)
     private TipoDespesaEnum tipoDespesaEnum;
-    private Instant dataCadastro = Instant.now();
+    private Instant dataCadastro;
     private Instant dataAlteracao;
     private Instant dataPagamento;
     private Instant dataVencimento;

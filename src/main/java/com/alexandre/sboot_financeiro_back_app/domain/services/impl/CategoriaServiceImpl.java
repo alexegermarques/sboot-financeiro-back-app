@@ -5,10 +5,9 @@ import com.alexandre.sboot_financeiro_back_app.domain.exceptions.ObjectNotFoundE
 import com.alexandre.sboot_financeiro_back_app.domain.services.CategoriaService;
 import com.alexandre.sboot_financeiro_back_app.infrastructure.persistence.CategoriaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,39 +16,26 @@ public class CategoriaServiceImpl implements CategoriaService {
     private final CategoriaRepository categoriaRepository;
 
     @Override
-    public Categoria adicionar(Categoria categoria) {
-        return this.categoriaRepository.save(categoria);
-    }
-
-    @Override
-    public Categoria editar(Long id, Categoria categoriaUpdate) {
-        Categoria categoriaSaved = this.categoriaRepository.findById(id)
-                            .orElseThrow(() -> new ObjectNotFoundException("Categoria não encontrada!"));
-
-        BeanUtils.copyProperties(categoriaUpdate, categoriaSaved);
-
-        return this.categoriaRepository.save(categoriaUpdate);
-    }
-
-    @Override
-    public void deletar(Long id) {
-        this.categoriaRepository.findById(id)
-                .ifPresent(categoria -> this.categoriaRepository.deleteById(categoria.getId()));
-    }
-
-    @Override
-    public Categoria buscarPorId(Long id) {
-        return this.categoriaRepository.findById(id)
-                   .orElseThrow(() -> new ObjectNotFoundException("Categoria não encontrada!"));
-    }
-
-    @Override
-    public List<Categoria> listarTodos() {
-        return this.categoriaRepository.findAll();
-    }
-
-    @Override
     public Categoria getCategoriaBySistemaFinanceiro(String emailUsuario) {
         return this.categoriaRepository.findCategoriaBySistemaFinanceiro(emailUsuario);
+    }
+
+    @Override
+    public void adicionarCategoria(Categoria categoria) {
+        this.categoriaRepository.save(categoria);
+    }
+
+    @Override
+    public void atualizarCategoria(Long id, Categoria categoriaUpdate) {
+        Optional<Categoria> categoriaSaved = this.categoriaRepository.findById(id);
+
+        if (categoriaSaved.isEmpty()) {
+            throw new ObjectNotFoundException("Categoria não encotrada com esse ID");
+        }
+
+        categoriaSaved.stream().findFirst().ifPresent(categoria -> {
+            categoria.setNome(categoriaUpdate.getNome());
+            this.categoriaRepository.save(categoria);
+        });
     }
 }
